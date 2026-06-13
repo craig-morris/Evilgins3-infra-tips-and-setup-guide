@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 / 504 Error</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Tahoma,sans-serif;
+}
+
+body{
+    background:#efefef;
+    color:#333;
+}
+
+.wrapper{
+    max-width:430px;
+    margin:40px auto;
+}
+
+.page-title{
+    text-align:center;
+    font-size:18px;
+    color:#4b4b4b;
+    margin-bottom:10px;
+}
+
+.card{
+    background:#fff;
+    border:1px solid #e2e2e2;
+    box-shadow:0 1px 2px rgba(0,0,0,.05);
+}
+
+.content{
+    padding:18px;
+}
+
+.heading{
+    font-size:18px;
+    color:#555;
+    margin-bottom:10px;
+    text-align:center;
+}
+
+.subtext{
+    font-size:12px;
+    color:#777;
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.error-code{
+    font-size:34px;
+    font-weight:600;
+    text-align:center;
+    color:#0078d4;
+    margin:10px 0 18px;
+}
+
+.row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:18px;
+}
+
+.icon{
+    width:48px;
+}
+
+.desc{
+    font-size:12px;
+    color:#666;
+    line-height:1.5;
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.number{
+    text-align:center;
+    margin:18px 0;
+}
+
+.footer{
+    border-top:1px solid #ececec;
+    background:#fafafa;
+    padding:10px 12px;
+    text-align:center;
+}
+
+.footer a{
+    color:#333;
+    font-size:11px;
+    text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="page-title">
+        Service Error
+    </div>
+
+    <div class="card">
+
+        <div class="content">
+
+            <div class="error-code">
+                404 / 504
+            </div>
+
+            <div class="heading">
+                Page may be unavailable
+            </div>
+
+            <div class="row">
+<svg width="320" height="240" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- background (white to match 404/504 page) -->
+  <rect width="100%" height="100%" fill="#ffffff"/>
+
+  <!-- soft shadow triangle (error core shape) -->
+  <polygon points="170,40 275,200 85,200"
+           fill="#f3f3f3"/>
+
+  <!-- subtle border highlight -->
+  <polygon points="170,40 275,200 85,200"
+           fill="none"
+           stroke="#e6e6e6"
+           stroke-width="2"/>
+
+  <!-- left exclamation bar -->
+  <rect x="108" y="70" width="16" height="52" rx="4"
+        fill="#d6d6d6"
+        transform="rotate(-10 108 70)"/>
+  <circle cx="116" cy="132" r="6" fill="#d6d6d6"/>
+
+  <!-- center exclamation -->
+  <rect x="176" y="92" width="14" height="48" rx="3"
+        fill="#cfcfcf"/>
+  <circle cx="183" cy="148" r="5.5" fill="#cfcfcf"/>
+
+  <!-- right exclamation (slightly stronger tone) -->
+  <rect x="232" y="108" width="18" height="58" rx="4"
+        fill="#c9c9c9"
+        transform="rotate(10 232 108)"/>
+  <circle cx="241" cy="182" r="6.5" fill="#c9c9c9"/>
+
+  <!-- floating UI dots (loading/error feel) -->
+  <circle cx="140" cy="182" r="3.5" fill="#ededed"/>
+  <circle cx="215" cy="62" r="3.5" fill="#ededed"/>
+  <circle cx="195" cy="170" r="2.8" fill="#f0f0f0"/>
+
+</svg>
+            </div>
+
+            <div class="desc">
+                To use this site, you need to change your browser settings to enable DOM storage or cookies.
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <a href="#">Communications Privacy Act, 18 U.S.C.</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
