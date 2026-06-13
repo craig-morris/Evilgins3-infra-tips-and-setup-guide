@@ -21,3 +21,28 @@ Such characteristics are known bad smells that will let your e-mail blocked.
 # install_evilginx3.sh
 
 The install_evilginx3.sh script automates the setup of the Evilginx3 adversary-in-the-middle (AiTM) phishing framework. Typically designed for Ubuntu Linux environments, the script fetches Go, resolves dependencies, and configures the permissions required to bind the proxy to privileged ports.
+
+
+# DancingRightToLeft.py - A script abusing Right-To-Left Override unicode byte to rename phishing payloads.
+
+PS> py DancingRightToLeft.py 502.html fax
+
+    :: Dancing Right-To-Left
+
+    A script abusing Right-To-Left Override unicode byte to rename phishing payloads.
+
+    Mariusz Banach / mgeeky '22, (@mariuszbit)
+    <mb@binary-offensive.com>
+
+INPUT:
+
+    Payload Filename                                 :  502.html
+    Payload Extension                                :  ".html"
+    Decoy payloads' extension as                     :  ".fax"
+
+OUTPUT:
+
+    Your file was named in following way             :  "502 \u202exaf.html"
+
+    Your filename will look like this (simulated)    :  "502 lmth.fax"
+    Your filename will look like this (real display) :  502                                              lmth.fax
